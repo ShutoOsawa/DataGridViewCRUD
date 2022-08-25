@@ -25,6 +25,8 @@ namespace DataGridComponent
         private TextBox ipAddressTextBox;
         private Button createRowButton;
         private Button deleteRowButton;
+        private Button updateRowButton;
+
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Controls.Add(dataGridView);
@@ -50,9 +52,13 @@ namespace DataGridComponent
             createRowButton.Name = "createRowButton";
             this.Controls.Add(createRowButton);
 
-            deleteRowButton = Components.ButtonComponent("Delete",400,300,this,Button_Clicked_Delete);
+            deleteRowButton = Components.ButtonComponent("Delete",350,300,this,Button_Clicked_Delete);
             deleteRowButton.Name = "deleteRowButton";
             this.Controls.Add(deleteRowButton);
+
+            updateRowButton = Components.ButtonComponent("Update", 400, 300, this, Button_Clicked_Update);
+            updateRowButton.Name = "updateRowButton";
+            this.Controls.Add(updateRowButton);
         }
 
         private void DataGridView_CellClicked(object sender, DataGridViewCellEventArgs e)
@@ -77,6 +83,15 @@ namespace DataGridComponent
             UpdateDataGridView(stbList);
             UpdateTextBoxes();
         }
+
+        private void Button_Clicked_Update(object sender, EventArgs e)
+        {
+            int index = dataGridView.CurrentCell.RowIndex;
+            STBInfo stb = stbList[index];
+            stb = UpdateInfo.UpdateRow(stb,this);
+            UpdateDataGridView(stbList);
+        }
+
         public void UpdateDataGridView(List<STBInfo> stbList)
         {
             dataGridView.DataSource = null;
