@@ -17,24 +17,33 @@ namespace DataGridComponent
             InitializeComponent();
         }
         DataGridView dataGridView = new DataGridView();
-        private TextBox nameTextBox = new TextBox();
-        
+        private TextBox nameTextBox;
+        private TextBox ipAddressTextBox;
+        private Button createRowButton;
         private void Form1_Load(object sender, EventArgs e)
         {
             this.Controls.Add(dataGridView);
-            nameTextBox.Top = 300;
+            nameTextBox = TextBoxComponent(300, 0);
             this.Controls.Add(nameTextBox);
-            
-            Button createRowButton = ButtonComponent(new EventHandler(Button_Clicked));
-            
+            ipAddressTextBox = TextBoxComponent(400, 0);
+            this.Controls.Add(ipAddressTextBox);
+            createRowButton = ButtonComponent("Create",300,300,Button_Clicked);
             this.Controls.Add(createRowButton);
         }
-        public Button ButtonComponent(EventHandler execute)
+
+        public TextBox TextBoxComponent(int top, int left)
         {
-            Button button = new Button();
-            button.Text = "Create";
-            button.Top = 300;
-            button.Left = 300;
+            var textBox = new TextBox();
+            textBox.Top = top;
+            textBox.Left = left;
+            return textBox;
+        }
+        public Button ButtonComponent(string textName,int top,int left,EventHandler execute)
+        {
+            var button = new Button();
+            button.Text = textName;
+            button.Top = top;
+            button.Left = left;
             var dlg = Delegate.CreateDelegate(typeof(EventHandler), this, execute.Method);
             button.GetType().GetEvent("Click").AddEventHandler(button,dlg);
             return button;
@@ -42,9 +51,11 @@ namespace DataGridComponent
         
         private void Button_Clicked(object sender, EventArgs e)
         {
-            CreateRow(new STBInfo(nameTextBox.Text));
+            CreateRow(new STBInfo(nameTextBox.Text,ipAddressTextBox.Text));
+            foreach ( TextBox tb in this.Controls.OfType<TextBox>()) {
+               tb.Text = String.Empty; 
+            } 
         }
-
 
         public List<STBInfo> stbList = new List<STBInfo>();
 
@@ -74,10 +85,11 @@ namespace DataGridComponent
     public class STBInfo
     {
         public string Name { get; set; }
-
-        public STBInfo(string name)
+        public string IPAddress { get; set; }
+        public STBInfo(string name,string ipAddress)
         {
             this.Name = name;
+            this.IPAddress = ipAddress;
         }
     }
 }
