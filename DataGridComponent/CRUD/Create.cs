@@ -4,10 +4,10 @@ namespace DataGridComponent
 {
     public class Create
     {
-        public static List<STBInfo> CreateRow(STBInfo stbInfo,List<STBInfo> stbList)
+        public static List<ItemInfo> CreateRow(ItemInfo itemInfo, List<ItemInfo> itemList)
         {
-            stbList.Add(stbInfo);
-            return stbList;
+            itemList.Add(itemInfo);
+            return itemList;
         }
 
     }

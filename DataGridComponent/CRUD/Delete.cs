@@ -4,13 +4,13 @@ namespace DataGridComponent
 {
     public class Delete
     {
-        public static List<STBInfo> DeleteRow(int index,List<STBInfo> stbList)
+        public static List<ItemInfo> DeleteRow(int index, List<ItemInfo> itemList)
         {
-            if (stbList.Count > 0)
+            if (itemList.Count > 0)
             {
-                stbList.RemoveAt(index);
+                itemList.RemoveAt(index);
             }
-            return stbList;
+            return itemList;
         }
     }
 }

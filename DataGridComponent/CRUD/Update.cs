@@ -1,24 +1,21 @@
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DataGridComponent
 {
     public class UpdateInfo
     {
-        public static STBInfo UpdateRow(STBInfo stbInfo,Form form)
+        public static ItemInfo UpdateRow(ItemInfo itemInfo, PanelInfo panelInfo)
         {
-            foreach (Control c in form.Controls)
+
+            foreach (Panel panel in panelInfo.PanelList)
             {
-                if (c.Name == "nameTextBox")
+                foreach (var textBox in panel.Controls.OfType<TextBox>())
                 {
-                     stbInfo.Name= c.Text;
-                }
-                else if (c.Name == "ipAddressTextBox")
-                {
-                     stbInfo.IPAddress=c.Text;
+                    itemInfo.GetType().GetProperty(textBox.Name).SetValue(itemInfo, textBox.Text);
                 }
             }
-
-            return stbInfo;
+            return itemInfo;
         }
     }
 }

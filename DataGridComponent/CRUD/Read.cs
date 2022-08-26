@@ -1,24 +1,26 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DataGridComponent
 {
     public class Read
     {
-        public static void ReadRow(STBInfo stbInfo, Form form)
+        public static void ReadRow(ItemInfo itemInfo, PanelInfo panelInfo)
         {
-            foreach (Control c in form.Controls)
+            foreach (Panel panel in panelInfo.PanelList)
             {
-                if (c.Name == "nameTextBox")
+                foreach (var textBox in panel.Controls.OfType<TextBox>())
                 {
-                    c.Text = stbInfo.Name;
-                }
-                else if (c.Name == "ipAddressTextBox")
-                {
-                    c.Text = stbInfo.IPAddress;
+                    Object propValue = GetPropValue(itemInfo, textBox.Name);
+                    textBox.Text = propValue.ToString();
                 }
             }
+        }
+
+        public static object GetPropValue(object src, string propName)
+        {
+            return src.GetType().GetProperty(propName).GetValue(src, null);
         }
     }
 }
