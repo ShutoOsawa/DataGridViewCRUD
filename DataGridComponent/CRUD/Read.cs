@@ -8,6 +8,7 @@ namespace DataGridComponent
     {
         public static void ReadRow(ItemInfo itemInfo, PanelInfo panelInfo)
         {
+
             foreach (Panel panel in panelInfo.PanelList)
             {
                 foreach (var textBox in panel.Controls.OfType<TextBox>())

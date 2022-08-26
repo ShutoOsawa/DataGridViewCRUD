@@ -5,31 +5,18 @@ namespace DataGridComponent
 {
     public class ItemInfo
     {
+        [Required]
+        public string Location { get; set; }
+
+        [Required]
+        [StringMaximum(4)]
         public string Name { get; set; }
+
+        [Required]
         public string IPAddress { get; set; }
-        /*public STBInfo(string name, string ipAddress)
-        {
-            this.Name = name;
-            this.IPAddress = ipAddress;
-        }*/
-
-        /*public STBInfo(List<TextBox> textBoxes)
-        {
-            foreach (TextBox tb in textBoxes)
-            {
-                AddItem(tb.Text, tb.Name);
-            }
-        }
-
-        public void AddItem(string name, object item)
-        {
-            this.InfoDictionary.Add(item, name);
-        }
-
-        public Dictionary<object, string> InfoDictionary { get; set; } = new Dictionary<object, string>();
-        */
 
     }
+
 
     public class PanelInfo
     {

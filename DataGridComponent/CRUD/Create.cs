@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Windows.Forms;
 
 namespace DataGridComponent
 {
@@ -6,7 +7,20 @@ namespace DataGridComponent
     {
         public static List<ItemInfo> CreateRow(ItemInfo itemInfo, List<ItemInfo> itemList)
         {
-            itemList.Add(itemInfo);
+            var errMsg = itemInfo.Validation();
+
+            if (errMsg != "")
+            {
+                MessageBox.Show("正しい値を入力してください。",
+                    "エラー",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
+            }
+            else
+            {
+                itemList.Add(itemInfo);
+            }
+
             return itemList;
         }
 

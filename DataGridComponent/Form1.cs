@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using System.Windows.Forms;
 
 namespace DataGridComponent
@@ -17,49 +17,75 @@ namespace DataGridComponent
         public PanelInfo panelInfo = new PanelInfo();
         DataGridView dataGridView = new DataGridView();
         public List<TextBox> textBoxList = new List<TextBox>();
-        private TextBox nameTextBox;
-        private Label nameLabel;
-        private Label ipAddressLabel;
-        private TextBox ipAddressTextBox;
         private Button createRowButton;
         private Button deleteRowButton;
         private Button updateRowButton;
-        private Panel namePanel;
-        private Panel ipAddressPanel;
+
+        public void DataGridViewConfig()
+        {
+            dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+            dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_CellClicked);
+            dataGridView.Width = 500;
+            dataGridView.Height = 200;
+            dataGridView.ReadOnly = true;
+            dataGridView.MultiSelect = false;
+            dataGridView.RowHeadersVisible = false;
+            dataGridView.ColumnHeadersVisible = true;
+            dataGridView.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+
+            dataGridView.DataSource = null;
+            dataGridView.DataSource = new List<ItemInfo>();
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
 
             this.Controls.Add(dataGridView);
-            dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_CellClicked);
+            DataGridViewConfig();
 
-            namePanel = Components.PanelComponent(300, 0, 250, 20);
-            namePanel.BackColor = Color.Aqua;
+            //TextBoxName and Object Property Variable Name needs to match
+
+            Panel namePanel = Components.PanelComponent(300, 20, 250, 20);
+
             this.Controls.Add(namePanel);
             panelInfo.PanelList.Add(namePanel);
 
-            nameLabel = Components.LabelComponent("Name", 0, 0);
+            Label nameLabel = Components.LabelComponent("Name", 0, 0);
             nameLabel.Name = "nameLabel";
             namePanel.Controls.Add(nameLabel);
 
-            nameTextBox = Components.TextBoxComponent(0, 100);
+            TextBox nameTextBox = Components.TextBoxComponent(0, 100);
             nameTextBox.Name = "Name";
             namePanel.Controls.Add(nameTextBox);
             textBoxList.Add(nameTextBox);
 
-            ipAddressPanel = Components.PanelComponent(350, 0, 250, 20);
-            ipAddressPanel.BackColor = Color.Aqua;
+            Panel ipAddressPanel = Components.PanelComponent(350, 20, 250, 20);
+
             this.Controls.Add(ipAddressPanel);
             panelInfo.PanelList.Add(ipAddressPanel);
 
-            ipAddressLabel = Components.LabelComponent("IP Address", 0, 0);
+            Label ipAddressLabel = Components.LabelComponent("IP Address", 0, 0);
             ipAddressLabel.Name = "ipAddressLabel";
             ipAddressPanel.Controls.Add(ipAddressLabel);
 
-            ipAddressTextBox = Components.TextBoxComponent(0, 100);
+            TextBox ipAddressTextBox = Components.TextBoxComponent(0, 100);
             ipAddressTextBox.Name = "IPAddress";
             ipAddressPanel.Controls.Add(ipAddressTextBox);
             textBoxList.Add(ipAddressTextBox);
+
+            Panel locationPanel = Components.PanelComponent(250, 20, 250, 20);
+
+            this.Controls.Add(locationPanel);
+            panelInfo.PanelList.Add(locationPanel);
+
+            Label locationLabel = Components.LabelComponent("Location", 0, 0);
+            locationLabel.Name = "locationLabel";
+            locationPanel.Controls.Add(locationLabel);
+
+            TextBox locationTextBox = Components.TextBoxComponent(0, 100);
+            locationTextBox.Name = "Location";
+            locationPanel.Controls.Add(locationTextBox);
+            textBoxList.Add(locationTextBox);
 
             CreateButtons();
         }
@@ -67,23 +93,26 @@ namespace DataGridComponent
 
         public void CreateButtons()
         {
-            createRowButton = Components.ButtonComponent("Create", 300, 300, this, Button_Clicked_Create);
+            createRowButton = Components.ButtonComponent("Create", 250, 300, this, Button_Clicked_Create);
             createRowButton.Name = "createRowButton";
             this.Controls.Add(createRowButton);
 
-            deleteRowButton = Components.ButtonComponent("Delete", 350, 300, this, Button_Clicked_Delete);
+            deleteRowButton = Components.ButtonComponent("Delete", 300, 300, this, Button_Clicked_Delete);
             deleteRowButton.Name = "deleteRowButton";
             this.Controls.Add(deleteRowButton);
 
-            updateRowButton = Components.ButtonComponent("Update", 400, 300, this, Button_Clicked_Update);
+            updateRowButton = Components.ButtonComponent("Update", 350, 300, this, Button_Clicked_Update);
             updateRowButton.Name = "updateRowButton";
             this.Controls.Add(updateRowButton);
         }
 
         private void DataGridView_CellClicked(object sender, DataGridViewCellEventArgs e)
         {
-            int index = dataGridView.CurrentCell.RowIndex;
-            Read.ReadRow(panelInfo.ItemList[index], panelInfo);
+            if (panelInfo.ItemList.Count > 0)
+            {
+                int index = dataGridView.CurrentCell.RowIndex;
+                Read.ReadRow(panelInfo.ItemList[index], panelInfo);
+            }
         }
 
         private void Button_Clicked_Delete(object sender, EventArgs e)
@@ -147,10 +176,14 @@ namespace DataGridComponent
 
         private void Button_Clicked_Update(object sender, EventArgs e)
         {
-            int index = dataGridView.CurrentCell.RowIndex;
-            ItemInfo item = panelInfo.ItemList[index];
-            item = UpdateInfo.UpdateRow(item, panelInfo);
-            UpdateDataGridView(panelInfo.ItemList);
+            if (panelInfo.ItemList.Count() > 0)
+            {
+                int index = dataGridView.CurrentCell.RowIndex;
+                ItemInfo item = panelInfo.ItemList[index];
+                item = UpdateInfo.UpdateRow(item, panelInfo);
+                panelInfo.ItemList[index] = item;
+                UpdateDataGridView(panelInfo.ItemList);
+            }
         }
 
         public void UpdateDataGridView(List<ItemInfo> itemList)
@@ -170,7 +203,48 @@ namespace DataGridComponent
             }
         }
 
+    }
 
+    public static class ValidateExt
+    {
+        public static string Validation<T>(this T obj) where T : class
+        {
+            var msg = new StringBuilder();
+            var props = typeof(T).GetProperties();
+            foreach (var prop in props)
+            {
+                foreach (var attr in prop.GetCustomAttributes())
+                {
+                    switch (attr)
+                    {
+                        case Required at:
+                            if (prop.GetValue(obj) == null || prop.GetValue(obj) == "")
+                                msg.AppendLine($"{prop.Name}:error");
+                            break;
+
+                        case StringMaximum at:
+                            if (prop.GetValue(obj).ToString().Length > at.Maximum)
+                                msg.AppendLine($"{prop.Name}:error");
+                            break;
+                    }
+                }
+            }
+
+            return msg.ToString();
+        }
+    }
+
+    [System.AttributeUsage(System.AttributeTargets.Property)]
+    public class Required : Attribute { }
+
+    [System.AttributeUsage(System.AttributeTargets.Property)]
+    public class StringMaximum : Attribute
+    {
+        public int Maximum { get; set; }
+        public StringMaximum(int max)
+        {
+            Maximum = max;
+        }
     }
 }
 
