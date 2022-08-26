@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Windows.Forms;
+using System.Xml.Serialization;
 
 namespace DataGridComponent
 {
@@ -17,9 +19,9 @@ namespace DataGridComponent
         public PanelInfo panelInfo = new PanelInfo();
         DataGridView dataGridView = new DataGridView();
         public List<TextBox> textBoxList = new List<TextBox>();
-        private Button createRowButton;
+        /*private Button createRowButton;
         private Button deleteRowButton;
-        private Button updateRowButton;
+        private Button updateRowButton;*/
 
         public void DataGridViewConfig()
         {
@@ -93,17 +95,25 @@ namespace DataGridComponent
 
         public void CreateButtons()
         {
-            createRowButton = Components.ButtonComponent("Create", 250, 300, this, Button_Clicked_Create);
+            Button createRowButton = Components.ButtonComponent("Create", 250, 300, this, Button_Clicked_Create);
             createRowButton.Name = "createRowButton";
             this.Controls.Add(createRowButton);
 
-            deleteRowButton = Components.ButtonComponent("Delete", 300, 300, this, Button_Clicked_Delete);
+            Button deleteRowButton = Components.ButtonComponent("Delete", 300, 300, this, Button_Clicked_Delete);
             deleteRowButton.Name = "deleteRowButton";
             this.Controls.Add(deleteRowButton);
 
-            updateRowButton = Components.ButtonComponent("Update", 350, 300, this, Button_Clicked_Update);
+            Button updateRowButton = Components.ButtonComponent("Update", 350, 300, this, Button_Clicked_Update);
             updateRowButton.Name = "updateRowButton";
             this.Controls.Add(updateRowButton);
+
+            Button saveButton = Components.ButtonComponent("Save", 250, 400, this, Button_Clicked_Save);
+            saveButton.Name = "saveButton";
+            this.Controls.Add(saveButton);
+
+            Button loadButton = Components.ButtonComponent("Load", 300, 400, this, Button_Clicked_Load);
+            loadButton.Name = "loadButton";
+            this.Controls.Add(loadButton);
         }
 
         private void DataGridView_CellClicked(object sender, DataGridViewCellEventArgs e)
@@ -123,6 +133,52 @@ namespace DataGridComponent
                 UpdateDataGridView(panelInfo.ItemList);
                 UpdateTextBoxes();
             }
+        }
+
+        private void Button_Clicked_Load(object sender, EventArgs e)
+        {
+            panelInfo.ItemList = XMLload();
+            UpdateDataGridView(panelInfo.ItemList);
+        }
+
+        public List<ItemInfo> XMLload()
+        {
+            List<ItemInfo> itemInfoList = new List<ItemInfo>();
+            try
+            {
+                string projectPath = xmlPath;
+                XmlSerializer panelSerializerinfo = new XmlSerializer(typeof(List<ItemInfo>));
+
+                StreamReader panelStreamReaderinfo = new StreamReader(projectPath);
+
+                itemInfoList =
+                    (List<ItemInfo>)panelSerializerinfo.Deserialize(panelStreamReaderinfo);
+                panelStreamReaderinfo.Close();
+            }
+            catch (System.IO.DirectoryNotFoundException)
+            {
+
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+
+            }
+            return itemInfoList;
+
+        }
+
+        private string xmlPath = @"C:\ProgramData\XMLData\\test.xml";
+        public void XMLSave()
+        {
+            XmlSerializer serialiserinfo = new XmlSerializer(typeof(List<ItemInfo>));
+            TextWriter Filestreaminfo = new StreamWriter(xmlPath);
+            serialiserinfo.Serialize(Filestreaminfo, panelInfo.ItemList);
+            Filestreaminfo.Close();
+        }
+
+        private void Button_Clicked_Save(object sender, EventArgs e)
+        {
+            XMLSave();
         }
 
         private List<Dictionary<string, string>> dictList = new List<Dictionary<string, string>>();

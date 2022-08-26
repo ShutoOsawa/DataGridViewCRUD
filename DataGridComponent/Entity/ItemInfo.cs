@@ -9,7 +9,6 @@ namespace DataGridComponent
         public string Location { get; set; }
 
         [Required]
-        [StringMaximum(4)]
         public string Name { get; set; }
 
         [Required]
