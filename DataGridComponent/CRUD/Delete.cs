@@ -6,7 +6,7 @@ namespace DataGridComponent
     {
         public static List<ItemInfo> DeleteRow(int index, List<ItemInfo> itemList)
         {
-            if (itemList.Count > 0)
+            if (itemList.Count > 0 || itemList!=null)
             {
                 itemList.RemoveAt(index);
             }

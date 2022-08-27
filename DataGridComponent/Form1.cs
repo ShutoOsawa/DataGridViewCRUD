@@ -105,24 +105,59 @@ namespace DataGridComponent
             var createButtonConfig = new ButtonConfig(createButtonDict);
             
             Button createRowButton = Components.ButtonComponent(createButtonConfig);
-            //createRowButton.Name = "createRowButton";
             this.Controls.Add(createRowButton);
 
-            //Button deleteRowButton = Components.ButtonComponent("Delete", 300, 300, this, Button_Clicked_Delete);
-            //deleteRowButton.Name = "deleteRowButton";
-            //this.Controls.Add(deleteRowButton);
+            var deleteButtonDict = new Dictionary<string, object>()
+            {
+                {"Left",300},
+                {"Top",300},
+                {"Form", this},
+                {"EventHandler",(EventHandler)Button_Clicked_Delete},
+                {"Text", "Delete"},
+                {"Name", "deleteRowButton"}
+            };
+            var deleteButtonConfig = new ButtonConfig(deleteButtonDict);
+            var deleteRowButton = Components.ButtonComponent(deleteButtonConfig);
+            this.Controls.Add(deleteRowButton);
 
-            //Button updateRowButton = Components.ButtonComponent("Update", 350, 300, this, Button_Clicked_Update);
-            //updateRowButton.Name = "updateRowButton";
-            //this.Controls.Add(updateRowButton);
+            var updateButtonDict = new Dictionary<string, object>()
+            {
+                {"Left",300},
+                {"Top",350},
+                {"Form", this},
+                {"EventHandler",(EventHandler)Button_Clicked_Update},
+                {"Text", "Update"},
+                {"Name", "updateRowButton"}
+            };
+            var updateButtonConfig = new ButtonConfig(updateButtonDict);
+            var updateRowButton = Components.ButtonComponent(updateButtonConfig);
+            this.Controls.Add(updateRowButton);
 
-            //Button saveButton = Components.ButtonComponent("Save", 250, 400, this, Button_Clicked_Save);
-            //saveButton.Name = "saveButton";
-            //this.Controls.Add(saveButton);
+            var saveButtonDict = new Dictionary<string, object>()
+            {
+                {"Left",400},
+                {"Top",300},
+                {"Form", this},
+                {"EventHandler",(EventHandler)Button_Clicked_Save},
+                {"Text", "Save"},
+                {"Name", "saveRowButton"}
+            };
+            var saveButtonConfig = new ButtonConfig(saveButtonDict);
+            var saveRowButton = Components.ButtonComponent(saveButtonConfig);
+            this.Controls.Add(saveRowButton);
 
-            //Button loadButton = Components.ButtonComponent("Load", 300, 400, this, Button_Clicked_Load);
-            //loadButton.Name = "loadButton";
-            //this.Controls.Add(loadButton);
+            var loadButtonDict = new Dictionary<string, object>()
+            {
+                {"Left",400},
+                {"Top",350},
+                {"Form", this},
+                {"EventHandler",(EventHandler)Button_Clicked_Load},
+                {"Text", "Load"},
+                {"Name", "loadRowButton"}
+            };
+            var loadButtonConfig = new ButtonConfig(loadButtonDict);
+            var loadRowButton = Components.ButtonComponent(loadButtonConfig);
+            this.Controls.Add(loadRowButton);
         }
 
         private void DataGridView_CellClicked(object sender, DataGridViewCellEventArgs e)
@@ -136,7 +171,7 @@ namespace DataGridComponent
 
         private void Button_Clicked_Delete(object sender, EventArgs e)
         {
-            if (panelInfo.ItemList.Count > 0)
+            if (panelInfo.ItemList.Count > 0 || panelInfo.ItemList != null)
             {
                 panelInfo.ItemList = Delete.DeleteRow(dataGridView.CurrentCell.RowIndex, panelInfo.ItemList);
                 UpdateDataGridView(panelInfo.ItemList);
@@ -176,13 +211,27 @@ namespace DataGridComponent
 
         }
 
+        private string xmlFileName = "test.xml";
+        private string xmlDirectoryName = @"C:\ProgramData\XMLData\";
         private string xmlPath = @"C:\ProgramData\XMLData\test.xml";
         public void XMLSave()
         {
-            XmlSerializer serialiserinfo = new XmlSerializer(typeof(List<ItemInfo>));
-            TextWriter Filestreaminfo = new StreamWriter(xmlPath);
-            serialiserinfo.Serialize(Filestreaminfo, panelInfo.ItemList);
-            Filestreaminfo.Close();
+            try
+            {
+                
+                XmlSerializer serialiserinfo = new XmlSerializer(typeof(List<ItemInfo>));
+                TextWriter Filestreaminfo = new StreamWriter(xmlPath);
+                serialiserinfo.Serialize(Filestreaminfo, panelInfo.ItemList);
+                Filestreaminfo.Close();
+            }
+            catch (System.IO.DirectoryNotFoundException)
+            {
+                Directory.CreateDirectory(xmlDirectoryName);
+            }
+            catch (System.IO.FileNotFoundException)
+            {
+
+            }
         }
 
         private void Button_Clicked_Save(object sender, EventArgs e)
