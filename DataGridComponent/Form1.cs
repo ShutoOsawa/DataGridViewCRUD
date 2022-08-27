@@ -85,13 +85,14 @@ namespace DataGridComponent
             locationPanel.Controls.Add(locationTextBox);
             textBoxList.Add(locationTextBox);
 
-            CreateButtons();
-
-            
+            SetButtonConfig();
+            ButtonComponents();
         }
 
-        
-        public void CreateButtons()
+        private List<Dictionary<string, object>> buttonDictList = new List<Dictionary<string, object>>();
+        private List<Button> buttonList = new List<Button>();
+        private List<ButtonConfig> buttonConfigList = new List<ButtonConfig>();
+        public void SetButtonConfig()
         {
             var createButtonDict = new Dictionary<string, object>()
             {
@@ -102,10 +103,7 @@ namespace DataGridComponent
                 {"Text", "Create"},
                 {"Name", "createRowButton"}
             };
-            var createButtonConfig = new ButtonConfig(createButtonDict);
-            
-            Button createRowButton = Components.ButtonComponent(createButtonConfig);
-            this.Controls.Add(createRowButton);
+            buttonDictList.Add(createButtonDict);
 
             var deleteButtonDict = new Dictionary<string, object>()
             {
@@ -116,9 +114,7 @@ namespace DataGridComponent
                 {"Text", "Delete"},
                 {"Name", "deleteRowButton"}
             };
-            var deleteButtonConfig = new ButtonConfig(deleteButtonDict);
-            var deleteRowButton = Components.ButtonComponent(deleteButtonConfig);
-            this.Controls.Add(deleteRowButton);
+            buttonDictList.Add(deleteButtonDict);
 
             var updateButtonDict = new Dictionary<string, object>()
             {
@@ -129,9 +125,7 @@ namespace DataGridComponent
                 {"Text", "Update"},
                 {"Name", "updateRowButton"}
             };
-            var updateButtonConfig = new ButtonConfig(updateButtonDict);
-            var updateRowButton = Components.ButtonComponent(updateButtonConfig);
-            this.Controls.Add(updateRowButton);
+            buttonDictList.Add(updateButtonDict);
 
             var saveButtonDict = new Dictionary<string, object>()
             {
@@ -142,9 +136,7 @@ namespace DataGridComponent
                 {"Text", "Save"},
                 {"Name", "saveRowButton"}
             };
-            var saveButtonConfig = new ButtonConfig(saveButtonDict);
-            var saveRowButton = Components.ButtonComponent(saveButtonConfig);
-            this.Controls.Add(saveRowButton);
+            buttonDictList.Add(saveButtonDict);
 
             var loadButtonDict = new Dictionary<string, object>()
             {
@@ -155,9 +147,17 @@ namespace DataGridComponent
                 {"Text", "Load"},
                 {"Name", "loadRowButton"}
             };
-            var loadButtonConfig = new ButtonConfig(loadButtonDict);
-            var loadRowButton = Components.ButtonComponent(loadButtonConfig);
-            this.Controls.Add(loadRowButton);
+            buttonDictList.Add(loadButtonDict);
+        }
+
+        public void ButtonComponents()
+        {
+            foreach (var item in buttonDictList)
+            {
+                var config = new ButtonConfig(item);
+                var button = Components.ButtonComponent(config);
+                this.Controls.Add(button);
+            }
         }
 
         private void DataGridView_CellClicked(object sender, DataGridViewCellEventArgs e)
@@ -171,12 +171,12 @@ namespace DataGridComponent
 
         private void Button_Clicked_Delete(object sender, EventArgs e)
         {
-            if (panelInfo.ItemList.Count > 0 || panelInfo.ItemList != null)
-            {
+           // if (panelInfo.ItemList.Count > 0 || panelInfo.ItemList != null)
+            //{
                 panelInfo.ItemList = Delete.DeleteRow(dataGridView.CurrentCell.RowIndex, panelInfo.ItemList);
                 UpdateDataGridView(panelInfo.ItemList);
                 UpdateTextBoxes();
-            }
+            //}
         }
 
         private void Button_Clicked_Load(object sender, EventArgs e)
