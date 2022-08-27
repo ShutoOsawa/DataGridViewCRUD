@@ -54,7 +54,8 @@ namespace DataGridComponent
             EventHandler = (EventHandler)configList["EventHandler"];
             Top = (int)configList["Top"];
             Left = (int)configList["Left"];
-
         }
     }
+
+
 }

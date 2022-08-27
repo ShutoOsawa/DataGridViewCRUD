@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Reflection.Emit;
 using System.Windows.Forms;
-using System.Xml.Serialization;
+using Label = System.Windows.Forms.Label;
 
 namespace DataGridComponent
 {
@@ -22,7 +21,7 @@ namespace DataGridComponent
         public void DataGridViewConfig()
         {
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DataGridView_CellClicked);
+            dataGridView.CellClick += DataGridView_CellClicked;
             dataGridView.Width = 500;
             dataGridView.Height = 200;
             dataGridView.ReadOnly = true;
@@ -42,9 +41,7 @@ namespace DataGridComponent
             DataGridViewConfig();
 
             //TextBoxName and Object Property Variable Name needs to match
-
             Panel namePanel = Components.PanelComponent(300, 20, 250, 20);
-
             this.Controls.Add(namePanel);
             panelInfo.PanelList.Add(namePanel);
 
@@ -85,15 +82,14 @@ namespace DataGridComponent
             locationPanel.Controls.Add(locationTextBox);
             textBoxList.Add(locationTextBox);
 
-            SetButtonConfig();
-            ButtonComponents();
+            var configList = SetButtonConfig();
+            ButtonComponents(configList);
         }
 
-        private List<Dictionary<string, object>> buttonDictList = new List<Dictionary<string, object>>();
-        private List<Button> buttonList = new List<Button>();
-        private List<ButtonConfig> buttonConfigList = new List<ButtonConfig>();
-        public void SetButtonConfig()
+
+        public List<Dictionary<string, object>> SetButtonConfig()
         {
+            var buttonDictList = new List<Dictionary<string, object>>();
             var createButtonDict = new Dictionary<string, object>()
             {
                 {"Left",300},
@@ -148,9 +144,10 @@ namespace DataGridComponent
                 {"Name", "loadRowButton"}
             };
             buttonDictList.Add(loadButtonDict);
+            return buttonDictList;
         }
 
-        public void ButtonComponents()
+        public void ButtonComponents(List<Dictionary<string, object>> buttonDictList)
         {
             foreach (var item in buttonDictList)
             {
@@ -171,72 +168,44 @@ namespace DataGridComponent
 
         private void Button_Clicked_Delete(object sender, EventArgs e)
         {
-           // if (panelInfo.ItemList.Count > 0 || panelInfo.ItemList != null)
-            //{
+            if (dataGridView.CurrentCell != null)
+            {
                 panelInfo.ItemList = Delete.DeleteRow(dataGridView.CurrentCell.RowIndex, panelInfo.ItemList);
-                UpdateDataGridView(panelInfo.ItemList);
+                UpdateDataGridView(panelInfo);
                 UpdateTextBoxes();
-            //}
+            }
         }
 
         private void Button_Clicked_Load(object sender, EventArgs e)
         {
-            panelInfo.ItemList = XMLload();
-            UpdateDataGridView(panelInfo.ItemList);
-        }
-
-        public List<ItemInfo> XMLload()
-        {
-            List<ItemInfo> itemInfoList = new List<ItemInfo>();
-            try
-            {
-                string projectPath = xmlPath;
-                XmlSerializer panelSerializerinfo = new XmlSerializer(typeof(List<ItemInfo>));
-
-                StreamReader panelStreamReaderinfo = new StreamReader(projectPath);
-
-                itemInfoList =
-                    (List<ItemInfo>)panelSerializerinfo.Deserialize(panelStreamReaderinfo);
-                panelStreamReaderinfo.Close();
-            }
-            catch (System.IO.DirectoryNotFoundException)
-            {
-
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-
-            }
-            return itemInfoList;
-
-        }
-
-        private string xmlFileName = "test.xml";
-        private string xmlDirectoryName = @"C:\ProgramData\XMLData\";
-        private string xmlPath = @"C:\ProgramData\XMLData\test.xml";
-        public void XMLSave()
-        {
-            try
-            {
-                
-                XmlSerializer serialiserinfo = new XmlSerializer(typeof(List<ItemInfo>));
-                TextWriter Filestreaminfo = new StreamWriter(xmlPath);
-                serialiserinfo.Serialize(Filestreaminfo, panelInfo.ItemList);
-                Filestreaminfo.Close();
-            }
-            catch (System.IO.DirectoryNotFoundException)
-            {
-                Directory.CreateDirectory(xmlDirectoryName);
-            }
-            catch (System.IO.FileNotFoundException)
-            {
-
-            }
+            panelInfo.ItemList = XmlManipulation.XMLload();
+            UpdateDataGridView(panelInfo);
         }
 
         private void Button_Clicked_Save(object sender, EventArgs e)
         {
-            XMLSave();
+            XmlManipulation.XMLSave(panelInfo);
+        }
+
+        private void Button_Clicked_Create(object sender, EventArgs e)
+        {
+            CreateDictionary();
+            ItemInfo itemInfo = DictionaryToObject<ItemInfo>(dictList[dictList.Count - 1]);
+            panelInfo.ItemList = Create.CreateRow(itemInfo, panelInfo.ItemList);
+            UpdateDataGridView(panelInfo);
+            UpdateTextBoxes();
+        }
+
+        private void Button_Clicked_Update(object sender, EventArgs e)
+        {
+            if (panelInfo.ItemList.Count > 0)
+            {
+                int index = dataGridView.CurrentCell.RowIndex;
+                ItemInfo item = panelInfo.ItemList[index];
+                item = UpdateInfo.UpdateRow(item, panelInfo);
+                panelInfo.ItemList[index] = item;
+                UpdateDataGridView(panelInfo);
+            }
         }
 
         private List<Dictionary<string, string>> dictList = new List<Dictionary<string, string>>();
@@ -278,32 +247,10 @@ namespace DataGridComponent
             return t;
         }
 
-
-        private void Button_Clicked_Create(object sender, EventArgs e)
-        {
-            CreateDictionary();
-            ItemInfo itemInfo = DictionaryToObject<ItemInfo>(dictList[dictList.Count - 1]);
-            panelInfo.ItemList = Create.CreateRow(itemInfo, panelInfo.ItemList);
-            UpdateDataGridView(panelInfo.ItemList);
-            UpdateTextBoxes();
-        }
-
-        private void Button_Clicked_Update(object sender, EventArgs e)
-        {
-            if (panelInfo.ItemList.Count() > 0)
-            {
-                int index = dataGridView.CurrentCell.RowIndex;
-                ItemInfo item = panelInfo.ItemList[index];
-                item = UpdateInfo.UpdateRow(item, panelInfo);
-                panelInfo.ItemList[index] = item;
-                UpdateDataGridView(panelInfo.ItemList);
-            }
-        }
-
-        public void UpdateDataGridView(List<ItemInfo> itemList)
+        public void UpdateDataGridView(PanelInfo panelInfo)
         {
             dataGridView.DataSource = null;
-            dataGridView.DataSource = itemList;
+            dataGridView.DataSource = panelInfo.ItemList;
         }
 
         public void UpdateTextBoxes()
@@ -317,35 +264,6 @@ namespace DataGridComponent
             }
         }
 
-    }
-
-    public static class ValidateExt
-    {
-        public static string Validation<T>(this T obj) where T : class
-        {
-            var msg = new StringBuilder();
-            var props = typeof(T).GetProperties();
-            foreach (var prop in props)
-            {
-                foreach (var attr in prop.GetCustomAttributes())
-                {
-                    switch (attr)
-                    {
-                        case Required at:
-                            if (prop.GetValue(obj) == null || prop.GetValue(obj) == "")
-                                msg.AppendLine($"{prop.Name}:error");
-                            break;
-
-                        case StringMaximum at:
-                            if (prop.GetValue(obj).ToString().Length > at.Maximum)
-                                msg.AppendLine($"{prop.Name}:error");
-                            break;
-                    }
-                }
-            }
-
-            return msg.ToString();
-        }
     }
 
     [System.AttributeUsage(System.AttributeTargets.Property)]
