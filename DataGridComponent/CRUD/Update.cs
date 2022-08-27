@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -24,14 +26,35 @@ namespace DataGridComponent
 
             if (errMsg != "")
             {
-                MessageBox.Show("正しい値を入力してください。",
-                    "エラー",
+                MessageBox.Show("please fill out all the boxes.",
+                    "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
                 itemInfo = prevItemInfo;
             }
 
             return itemInfo;
+        }
+    }
+
+    public class ButtonConfig
+    {
+        public string Name { get; set; }
+        public string Text { get; set; }
+        public Form Form { get; set; }
+        public EventHandler EventHandler { get; set; }
+        public int Top { get; set; }
+        public int Left { get; set; }
+
+        public ButtonConfig(Dictionary<string,object> configList)
+        {
+            Name = (string)configList["Name"];
+            Text = (string)configList["Text"];
+            Form = (Form)configList["Form"];
+            EventHandler = (EventHandler)configList["EventHandler"];
+            Top = (int)configList["Top"];
+            Left = (int)configList["Left"];
+
         }
     }
 }

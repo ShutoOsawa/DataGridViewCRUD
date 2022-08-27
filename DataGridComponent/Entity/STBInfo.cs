@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Windows.Forms;
+
 namespace DataGridComponent
 {
     public class STBInfo

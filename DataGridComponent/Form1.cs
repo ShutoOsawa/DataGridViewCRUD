@@ -19,10 +19,6 @@ namespace DataGridComponent
         public PanelInfo panelInfo = new PanelInfo();
         DataGridView dataGridView = new DataGridView();
         public List<TextBox> textBoxList = new List<TextBox>();
-        /*private Button createRowButton;
-        private Button deleteRowButton;
-        private Button updateRowButton;*/
-
         public void DataGridViewConfig()
         {
             dataGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
@@ -90,30 +86,43 @@ namespace DataGridComponent
             textBoxList.Add(locationTextBox);
 
             CreateButtons();
+
+            
         }
 
-
+        
         public void CreateButtons()
         {
-            Button createRowButton = Components.ButtonComponent("Create", 250, 300, this, Button_Clicked_Create);
-            createRowButton.Name = "createRowButton";
+            var createButtonDict = new Dictionary<string, object>()
+            {
+                {"Left",300},
+                {"Top",250},
+                {"Form", this},
+                {"EventHandler",(EventHandler)Button_Clicked_Create},
+                {"Text", "Create"},
+                {"Name", "createRowButton"}
+            };
+            var createButtonConfig = new ButtonConfig(createButtonDict);
+            
+            Button createRowButton = Components.ButtonComponent(createButtonConfig);
+            //createRowButton.Name = "createRowButton";
             this.Controls.Add(createRowButton);
 
-            Button deleteRowButton = Components.ButtonComponent("Delete", 300, 300, this, Button_Clicked_Delete);
-            deleteRowButton.Name = "deleteRowButton";
-            this.Controls.Add(deleteRowButton);
+            //Button deleteRowButton = Components.ButtonComponent("Delete", 300, 300, this, Button_Clicked_Delete);
+            //deleteRowButton.Name = "deleteRowButton";
+            //this.Controls.Add(deleteRowButton);
 
-            Button updateRowButton = Components.ButtonComponent("Update", 350, 300, this, Button_Clicked_Update);
-            updateRowButton.Name = "updateRowButton";
-            this.Controls.Add(updateRowButton);
+            //Button updateRowButton = Components.ButtonComponent("Update", 350, 300, this, Button_Clicked_Update);
+            //updateRowButton.Name = "updateRowButton";
+            //this.Controls.Add(updateRowButton);
 
-            Button saveButton = Components.ButtonComponent("Save", 250, 400, this, Button_Clicked_Save);
-            saveButton.Name = "saveButton";
-            this.Controls.Add(saveButton);
+            //Button saveButton = Components.ButtonComponent("Save", 250, 400, this, Button_Clicked_Save);
+            //saveButton.Name = "saveButton";
+            //this.Controls.Add(saveButton);
 
-            Button loadButton = Components.ButtonComponent("Load", 300, 400, this, Button_Clicked_Load);
-            loadButton.Name = "loadButton";
-            this.Controls.Add(loadButton);
+            //Button loadButton = Components.ButtonComponent("Load", 300, 400, this, Button_Clicked_Load);
+            //loadButton.Name = "loadButton";
+            //this.Controls.Add(loadButton);
         }
 
         private void DataGridView_CellClicked(object sender, DataGridViewCellEventArgs e)
@@ -167,7 +176,7 @@ namespace DataGridComponent
 
         }
 
-        private string xmlPath = @"C:\ProgramData\XMLData\\test.xml";
+        private string xmlPath = @"C:\ProgramData\XMLData\test.xml";
         public void XMLSave()
         {
             XmlSerializer serialiserinfo = new XmlSerializer(typeof(List<ItemInfo>));

@@ -11,8 +11,8 @@ namespace DataGridComponent
 
             if (errMsg != "")
             {
-                MessageBox.Show("正しい値を入力してください。",
-                    "エラー",
+                MessageBox.Show("please fill out all the boxes.",
+                    "Error",
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Error);
             }
