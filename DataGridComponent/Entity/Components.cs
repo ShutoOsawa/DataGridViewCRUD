@@ -1,48 +1,52 @@
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 
 namespace DataGridComponent
 {
     public class Components
     {
-        public static Label LabelComponent(LabelConfig config)
+        public static Label LabelComponent(Dictionary<string, object> dict)
         {
             var label = new Label();
-            label.Top = config.Top;
-            label.Left = config.Left;
-            label.Text = config.Text;
+            label.Top = (int)dict["Top"];
+            label.Left = (int)dict["Left"];
+            label.Text = (string)dict["Text"];
+            label.Name = (string)dict["Name"];
             return label;
         }
 
-        public static TextBox TextBoxComponent(TextBoxConfig config)
+        public static TextBox TextBoxComponent(Dictionary<string, object> dict)
         {
             var textBox = new TextBox();
-            textBox.Top = config.Top;
-            textBox.Left = config.Left;
-            textBox.Width = config.Width;
-            textBox.Height = config.Height;
+            textBox.Top = (int)dict["Top"];
+            textBox.Left = (int)dict["Left"];
+            textBox.Width = (int)dict["Width"];
+            textBox.Height = (int)dict["Height"];
+            textBox.Name = (string)dict["Name"];
             return textBox;
         }
-        public static Button ButtonComponent(ButtonConfig config)
+        public static Button ButtonComponent(Dictionary<string, object> dict)
         {
             var button = new Button();
-            button.Name = config.Name;
-            button.Text = config.Text;
-            button.Top = config.Top;
-            button.Left = config.Left;
-            var dlg = Delegate.CreateDelegate(typeof(EventHandler), config.ParentControl, config.EventHandler.Method);
+            button.Name = (string)dict["Name"];
+            button.Text = (string)dict["Text"];
+            button.Top = (int)dict["Top"];
+            button.Left = (int)dict["Left"];
+            var eventHandler = (EventHandler)dict["EventHandler"];
+            var dlg = Delegate.CreateDelegate(typeof(EventHandler), dict["Form"], eventHandler.Method);
             button.GetType().GetEvent("Click").AddEventHandler(button,dlg);
             return button;
         }
 
-        public static Panel PanelComponent(PanelConfig config)
+        public static Panel PanelComponent(Dictionary<string, object> dict)
         {
             var panel = new Panel();
-            panel.Name = config.Name;
-            panel.Top = config.Top;
-            panel.Left = config.Left;
-            panel.Width = config.Width;
-            panel.Height = config.Height;
+            panel.Name = (string)dict["Name"];
+            panel.Top = (int)dict["Top"];
+            panel.Left = (int)dict["Left"];
+            panel.Width = (int)dict["Width"];
+            panel.Height = (int)dict["Height"];
             return panel;
         }
     }
