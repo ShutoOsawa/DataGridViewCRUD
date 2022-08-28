@@ -37,25 +37,76 @@ namespace DataGridComponent
         }
     }
 
-    public class ButtonConfig
+    public class BaseConfig
     {
         public string Name { get; set; }
         public string Text { get; set; }
-        public Form Form { get; set; }
-        public EventHandler EventHandler { get; set; }
         public int Top { get; set; }
         public int Left { get; set; }
 
+        public int Width { get; set; }
+
+        public int Height { get; set; }
+    }
+    
+    public class ButtonConfig:BaseConfig
+    {
+        public EventHandler EventHandler { get; set; }
+        public Form ParentControl { get; set; }
         public ButtonConfig(Dictionary<string,object> configList)
         {
             Name = (string)configList["Name"];
             Text = (string)configList["Text"];
-            Form = (Form)configList["Form"];
+            ParentControl = (Form)configList["Form"];
             EventHandler = (EventHandler)configList["EventHandler"];
             Top = (int)configList["Top"];
             Left = (int)configList["Left"];
         }
     }
 
+    public class PanelConfig:BaseConfig
+    {
+        public Form ParentControl { get; set; }
+        public PanelConfig(Dictionary<string, object> configList)
+        {
+            Name = (string)configList["Name"];
+            ParentControl = (Form)configList["Form"];
+            Top = (int)configList["Top"];
+            Left = (int)configList["Left"];
+            Width = (int)configList["Width"];
+            Height = (int)configList["Height"];
+        }
+    }
+
+    public class TextBoxConfig : BaseConfig
+    {
+        public Panel ParentControl { get; set; }
+
+        public TextBoxConfig(Dictionary<string, object> configList)
+        {
+            Name = (string)configList["Name"];
+            ParentControl = (Panel)configList["Panel"];
+            Top = (int)configList["Top"];
+            Left = (int)configList["Left"];
+            Width = (int)configList["Width"];
+            Height = (int)configList["Height"];
+        }
+    }
+
+    public class LabelConfig : BaseConfig
+    {
+        public Panel ParentControl { get; set; }
+
+        public LabelConfig(Dictionary<string, object> configList)
+        {
+            Name = (string)configList["Name"];
+            ParentControl = (Panel)configList["Panel"];
+            Top = (int)configList["Top"];
+            Left = (int)configList["Left"];
+            Width = (int)configList["Width"];
+            Height = (int)configList["Height"];
+            Text = (string)configList["Text"];
+        }
+    }
 
 }

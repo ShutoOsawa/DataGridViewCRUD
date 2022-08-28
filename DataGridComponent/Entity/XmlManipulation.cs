@@ -36,8 +36,7 @@ namespace DataGridComponent
         public static void XMLSave(PanelInfo panelInfo)
         {
             try
-            {
-                
+            {                
                 string xmlPath = @"C:\ProgramData\XMLData\test.xml";
                 XmlSerializer serialiserinfo = new XmlSerializer(typeof(List<ItemInfo>));
                 TextWriter Filestreaminfo = new StreamWriter(xmlPath);

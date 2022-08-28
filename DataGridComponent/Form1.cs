@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -41,49 +42,174 @@ namespace DataGridComponent
             DataGridViewConfig();
 
             //TextBoxName and Object Property Variable Name needs to match
-            Panel namePanel = Components.PanelComponent(300, 20, 250, 20);
-            this.Controls.Add(namePanel);
-            panelInfo.PanelList.Add(namePanel);
+            //Panel namePanel = Components.PanelComponent(300, 20, 250, 20);
+            //this.Controls.Add(namePanel);
+            //panelInfo.PanelList.Add(namePanel);
 
-            Label nameLabel = Components.LabelComponent("Name", 0, 0);
-            nameLabel.Name = "nameLabel";
-            namePanel.Controls.Add(nameLabel);
+            //Label nameLabel = Components.LabelComponent("Name", 0, 0);
+            //nameLabel.Name = "nameLabel";
+            //namePanel.Controls.Add(nameLabel);
 
-            TextBox nameTextBox = Components.TextBoxComponent(0, 100);
-            nameTextBox.Name = "Name";
-            namePanel.Controls.Add(nameTextBox);
-            textBoxList.Add(nameTextBox);
+            //TextBox nameTextBox = Components.TextBoxComponent(0, 100);
+            //nameTextBox.Name = "Name";
+            //namePanel.Controls.Add(nameTextBox);
+            //textBoxList.Add(nameTextBox);
 
-            Panel ipAddressPanel = Components.PanelComponent(350, 20, 250, 20);
+            //Panel ipAddressPanel = Components.PanelComponent(350, 20, 250, 20);
 
-            this.Controls.Add(ipAddressPanel);
-            panelInfo.PanelList.Add(ipAddressPanel);
+            //this.Controls.Add(ipAddressPanel);
+            //panelInfo.PanelList.Add(ipAddressPanel);
 
-            Label ipAddressLabel = Components.LabelComponent("IP Address", 0, 0);
-            ipAddressLabel.Name = "ipAddressLabel";
-            ipAddressPanel.Controls.Add(ipAddressLabel);
+            //Label ipAddressLabel = Components.LabelComponent("IP Address", 0, 0);
+            //ipAddressLabel.Name = "ipAddressLabel";
+            //ipAddressPanel.Controls.Add(ipAddressLabel);
 
-            TextBox ipAddressTextBox = Components.TextBoxComponent(0, 100);
-            ipAddressTextBox.Name = "IPAddress";
-            ipAddressPanel.Controls.Add(ipAddressTextBox);
-            textBoxList.Add(ipAddressTextBox);
+            //TextBox ipAddressTextBox = Components.TextBoxComponent(0, 100);
+            //ipAddressTextBox.Name = "IPAddress";
+            //ipAddressPanel.Controls.Add(ipAddressTextBox);
+            //textBoxList.Add(ipAddressTextBox);
 
-            Panel locationPanel = Components.PanelComponent(250, 20, 250, 20);
+            //Panel locationPanel = Components.PanelComponent(250, 20, 250, 20);
 
-            this.Controls.Add(locationPanel);
-            panelInfo.PanelList.Add(locationPanel);
+            //this.Controls.Add(locationPanel);
+            //panelInfo.PanelList.Add(locationPanel);
 
-            Label locationLabel = Components.LabelComponent("Location", 0, 0);
-            locationLabel.Name = "locationLabel";
-            locationPanel.Controls.Add(locationLabel);
+            //Label locationLabel = Components.LabelComponent("Location", 0, 0);
+            //locationLabel.Name = "locationLabel";
+            //locationPanel.Controls.Add(locationLabel);
 
-            TextBox locationTextBox = Components.TextBoxComponent(0, 100);
-            locationTextBox.Name = "Location";
-            locationPanel.Controls.Add(locationTextBox);
-            textBoxList.Add(locationTextBox);
+            //TextBox locationTextBox = Components.TextBoxComponent(0, 100);
+            //locationTextBox.Name = "Location";
+            //locationPanel.Controls.Add(locationTextBox);
+            //textBoxList.Add(locationTextBox);
 
-            var configList = SetButtonConfig();
-            ButtonComponents(configList);
+            ButtonComponents(SetButtonConfig());
+
+            PanelComponents(SetPanelConfig());
+
+            TextBoxComponents(SetTextBoxConfig());
+
+            LabelComponents(SetLabelConfig());
+
+        }
+
+
+        public List<Dictionary<string, object>> SetTextBoxConfig()
+        {
+            var dictList = new List<Dictionary<string, object>>();
+            var nameTextBoxDict = new Dictionary<string, object>()
+            {
+                {"Left",100},
+                {"Top",0},
+                {"Width",200},
+                {"Height",20},
+                {"Panel", panelDict["NamePanel"]},
+                {"Name", "NameTextBox"}
+            };
+            dictList.Add(nameTextBoxDict);
+
+            var ipAddressTextBoxDict = new Dictionary<string, object>()
+            {
+                {"Left",100},
+                {"Top",0},
+                {"Width",200},
+                {"Height",20},
+                {"Panel", panelDict["IPAddressPanel"]},
+                {"Name", "IPAddressTextBox"}
+            };
+            dictList.Add(ipAddressTextBoxDict);
+            var locationTextBoxDict = new Dictionary<string, object>()
+            {
+                {"Left",100},
+                {"Top",0},
+                {"Width",200},
+                {"Height",20},
+                {"Panel", panelDict["LocationPanel"]},
+                {"Name", "LocationTextBox"}
+            };
+            dictList.Add(locationTextBoxDict);
+
+            return dictList;
+        }
+
+        public List<Dictionary<string, object>> SetLabelConfig()
+        {
+            var dictList = new List<Dictionary<string, object>>();
+            var nameLabelDict = new Dictionary<string, object>()
+            {
+                {"Left",0},
+                {"Top",0},
+                {"Width",200},
+                {"Height",20},
+                {"Panel", panelDict["NamePanel"]},
+                {"Name", "NameLabel"},
+                {"Text","Name"}
+            };
+            dictList.Add(nameLabelDict);
+
+            var ipAddressLabelDict = new Dictionary<string, object>()
+            {
+                {"Left",0},
+                {"Top",0},
+                {"Width",200},
+                {"Height",20},
+                {"Panel", panelDict["IPAddressPanel"]},
+                {"Name", "IPAddressLabel"},
+                {"Text","IP Address"}
+            };
+            dictList.Add(ipAddressLabelDict);
+            var locationTextBoxDict = new Dictionary<string, object>()
+            {
+                {"Left",0},
+                {"Top",0},
+                {"Width",200},
+                {"Height",20},
+                {"Panel", panelDict["LocationPanel"]},
+                {"Name", "LocationLabel"},
+                {"Text","Location"}
+            };
+            dictList.Add(locationTextBoxDict);
+
+            return dictList;
+        }
+
+        public List<Dictionary<string, object>> SetPanelConfig()
+        {
+            var panelDictList = new List<Dictionary<string, object>>();
+            var namePanelDict = new Dictionary<string, object>()
+            {
+                {"Left",20},
+                {"Top",250},
+                {"Width",300},
+                {"Height",20},
+                {"Form", this},
+                {"Name", "NamePanel"}
+            };
+            panelDictList.Add(namePanelDict);
+
+            var ipAddressPanelDict = new Dictionary<string, object>()
+            {
+                {"Left",20},
+                {"Top",300},
+                {"Width",300},
+                {"Height",20},
+                {"Form", this},
+                {"Name", "IPAddressPanel"}
+            };
+            panelDictList.Add(ipAddressPanelDict);
+
+            var locationPanelDict = new Dictionary<string, object>()
+            {
+                {"Left",20},
+                {"Top",350},
+                {"Width",300},
+                {"Height",20},
+                {"Form", this},
+                {"Name", "LocationPanel"}
+            };
+            panelDictList.Add(locationPanelDict);
+
+            return panelDictList;
         }
 
 
@@ -147,6 +273,19 @@ namespace DataGridComponent
             return buttonDictList;
         }
 
+        public void PanelComponents(List<Dictionary<string, object>> panelDictList)
+        {
+            foreach (var item in panelDictList)
+            {
+                var config = new PanelConfig(item);
+                var panel = Components.PanelComponent(config);
+                panel.BackColor = Color.Aqua;
+                this.Controls.Add(panel);
+                panelDict[panel.Name] = panel;
+            }
+        }
+
+        private Dictionary<string, Panel> panelDict = new Dictionary<string, Panel>(); 
         public void ButtonComponents(List<Dictionary<string, object>> buttonDictList)
         {
             foreach (var item in buttonDictList)
@@ -154,6 +293,26 @@ namespace DataGridComponent
                 var config = new ButtonConfig(item);
                 var button = Components.ButtonComponent(config);
                 this.Controls.Add(button);
+            }
+        }
+
+        public void TextBoxComponents(List<Dictionary<string, object>> textBoxDictList)
+        {
+            foreach (var item in textBoxDictList)
+            {
+                var config = new TextBoxConfig(item);
+                var textBox = Components.TextBoxComponent(config);
+                config.ParentControl.Controls.Add(textBox);
+            }
+        }
+
+        public void LabelComponents(List<Dictionary<string, object>> labelDictList)
+        {
+            foreach (var item in labelDictList)
+            {
+                var config = new LabelConfig(item);
+                var label = Components.LabelComponent(config);
+                config.ParentControl.Controls.Add(label);
             }
         }
 
